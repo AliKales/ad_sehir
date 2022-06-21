@@ -23,8 +23,10 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: SimpleUIs.elevatedButton(
           context: context,
-          onPress: () {
-            Funcs().navigatorPush(context, const RoomCreatePage());
+          onPress: () async {
+            var modelGameSettings =
+                await Funcs().navigatorPush(context, RoomCreatePage());
+            Navigator.pushNamed(context, "/r=");
           },
           text: "Oda Kur",
         ),

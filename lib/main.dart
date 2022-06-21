@@ -38,11 +38,13 @@ class MyApp extends StatelessWidget {
       },
       title: 'İsim Şehir',
       theme: ThemeData(
+        iconTheme: const IconThemeData(color: color4),
         primarySwatch: CustomColor().getMaterialColor(
             color4.red, color4.green, color4.blue, color4.value),
         primaryColor: color4,
         textTheme: const TextTheme(
           headline6: TextStyle(color: color4),
+          subtitle1: TextStyle(color: color4),
         ),
         tooltipTheme: TooltipTheme.of(context).copyWith(
             textStyle: Theme.of(context)
@@ -57,6 +59,6 @@ class MyApp extends StatelessWidget {
 
   dynamic generateRoute(String link, RouteSettings? settings) {
     return MaterialPageRoute(
-        builder: (_) => const RoomCreatePage(), settings: settings);
+        builder: (_) => RoomCreatePage(), settings: settings);
   }
 }

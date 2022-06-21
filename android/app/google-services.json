@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "172226951101",
+    "project_id": "isimsehir-1111",
+    "storage_bucket": "isimsehir-1111.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172226951101:android:69d7a30e84b95f9d2104d4",
+        "android_client_info": {
+          "package_name": "com.companyname.packagename.ad_sehir"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172226951101-jsif1iu4jvhl59sg9sp337ledbekq9mb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOBdZ4AAC_Eu0GYCBivTgbmRR2Qzhwobg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172226951101-jsif1iu4jvhl59sg9sp337ledbekq9mb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
