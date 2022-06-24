@@ -1,16 +1,26 @@
 import 'package:ad_sehir/colors.dart';
+import 'package:ad_sehir/firebase_options.dart';
 import 'package:ad_sehir/pages/home_page.dart';
-import 'package:ad_sehir/pages/room_create_page.dart';
+import 'package:ad_sehir/pages/room_page.dart';
 import 'package:ad_sehir/provider/provider_game_settings.dart';
+import 'package:ad_sehir/provider/provider_room_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<ProviderGameSettings>(
           create: (_) => ProviderGameSettings(),
+        ),
+        ChangeNotifierProvider<ProviderRoomPage>(
+          create: (_) => ProviderRoomPage(),
         ),
       ],
       child: const MyApp(),
@@ -38,14 +48,19 @@ class MyApp extends StatelessWidget {
       },
       title: 'İsim Şehir',
       theme: ThemeData(
+        dividerColor: color3,
+        dividerTheme: DividerThemeData(
+          color: color3,
+          thickness: 4
+        ),
+        appBarTheme:
+            const AppBarTheme(backgroundColor: color1, foregroundColor: color4),
         iconTheme: const IconThemeData(color: color4),
         primarySwatch: CustomColor().getMaterialColor(
             color4.red, color4.green, color4.blue, color4.value),
         primaryColor: color4,
-        textTheme: const TextTheme(
-          headline6: TextStyle(color: color4),
-          subtitle1: TextStyle(color: color4),
-        ),
+        primaryTextTheme: textThemeTexts(),
+        textTheme: textThemeTexts(),
         tooltipTheme: TooltipTheme.of(context).copyWith(
             textStyle: Theme.of(context)
                 .textTheme
@@ -57,8 +72,32 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  TextTheme textThemeTexts() {
+    return const TextTheme(
+      headline6: TextStyle(color: color4),
+      subtitle1: TextStyle(color: color4),
+      bodyText2: TextStyle(color: color4),
+      bodyText1: TextStyle(color: color4),
+    );
+  }
+
   dynamic generateRoute(String link, RouteSettings? settings) {
+    // return MaterialPageRoute(
+    //     builder: (_) => const EndPage(), settings: settings);
+    Map params = {};
+    if (link.contains("?")) {
+      List<String> paramsList = link.split("?")[1].split("&");
+
+      for (var item in paramsList) {
+        params[item.split("=")[0]] = item.split("=")[1];
+      }
+    }
+
+    if (link.contains("room")) {
+      return MaterialPageRoute(
+          builder: (_) => RoomPage(roomId: params['r']), settings: settings);
+    }
     return MaterialPageRoute(
-        builder: (_) => RoomCreatePage(), settings: settings);
+        builder: (_) => const HomePage(), settings: settings);
   }
 }

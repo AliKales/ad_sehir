@@ -1,5 +1,6 @@
 import 'package:ad_sehir/UIs/custom_text_field.dart';
 import 'package:ad_sehir/colors.dart';
+import 'package:ad_sehir/firebase/realtime.dart';
 import 'package:ad_sehir/funcs.dart';
 import 'package:ad_sehir/models/model_game_settings.dart';
 import 'package:ad_sehir/provider/provider_game_settings.dart';
@@ -101,10 +102,13 @@ class RoomCreatePage extends StatelessWidget {
 
     if ((modelGameSettings.categories?.isEmpty ?? true) ||
         (modelGameSettings.minute == null)) {
-      Funcs().showSnackBar(context, "Dakika ve Kategori ekle.");
+      Funcs().showSnackBar(context, "Dakika, Username ve Kategori ekle.");
       return;
     }
 
-    Navigator.pop(context,modelGameSettings);
+    String path = await Realtime.createRoom(
+        context: context, modelGameSettings: modelGameSettings);
+
+    Navigator.pop(context, path);
   }
 }

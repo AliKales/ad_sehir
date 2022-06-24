@@ -1,4 +1,5 @@
 import 'package:ad_sehir/colors.dart';
+import 'package:ad_sehir/firebase/realtime.dart';
 import 'package:ad_sehir/funcs.dart';
 import 'package:ad_sehir/pages/room_create_page.dart';
 import 'package:ad_sehir/simpleUIs.dart';
@@ -24,9 +25,10 @@ class HomePage extends StatelessWidget {
         child: SimpleUIs.elevatedButton(
           context: context,
           onPress: () async {
-            var modelGameSettings =
+            var path =
                 await Funcs().navigatorPush(context, RoomCreatePage());
-            Navigator.pushNamed(context, "/r=");
+
+            Navigator.pushNamed(context, "/room?r=$path");
           },
           text: "Oda Kur",
         ),

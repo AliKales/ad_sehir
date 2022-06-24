@@ -1,4 +1,6 @@
 import 'package:ad_sehir/colors.dart';
+import 'package:ad_sehir/models/model_player.dart';
+import 'package:ad_sehir/values.dart';
 import 'package:flutter/material.dart';
 
 class Funcs {
@@ -29,5 +31,30 @@ class Funcs {
         backgroundColor: color3,
       ),
     );
+  }
+
+  DateTime getGMTDateTimeNow() {
+    int iS = DateTime.now().timeZoneOffset.inSeconds;
+    return DateTime.now().subtract(Duration(seconds: iS));
+  }
+
+  DateTime? getFixedDateTime(DateTime? dT) {
+    int iS = DateTime.now().timeZoneOffset.inSeconds;
+    return dT?.add(Duration(seconds: iS));
+  }
+
+  String getIdByTime() {
+    DateTime dateTime = getGMTDateTimeNow();
+    return "${dateTime.year}${dateTime.month}${dateTime.day}${dateTime.hour}${dateTime.minute}${dateTime.second}${dateTime.millisecond}";
+  }
+
+  bool hasJoined(players) {
+    return players
+            .firstWhere(
+              (element) => element.id == Values.modelPlayerMe?.id,
+              orElse: () => ModelPlayer(),
+            )
+            .id ==
+        null;
   }
 }
