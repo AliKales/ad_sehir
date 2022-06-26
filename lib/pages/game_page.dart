@@ -25,6 +25,7 @@ class _GamePageState extends State<GamePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Realtime().stopListeners();
     listTECS =
         List.generate(categories.length, (index) => TextEditingController());
   }
@@ -49,7 +50,7 @@ class _GamePageState extends State<GamePage> {
           listTECS.length, (index) => listTECS[index].text.trim());
 
       WidgetsBinding.instance
-          .addPostFrameCallback((_) => Funcs().navigatorPushReplacement(
+          .addPostFrameCallback((_) => Funcs().navigatorPush(
               context,
               EndPage(
                 answers: _answers,

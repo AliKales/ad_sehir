@@ -45,7 +45,7 @@ class _RoomPageState extends State<RoomPage> {
     }
     ModelGameSettings gameSettings =
         Provider.of<ProviderGameSettings>(context).modelGameSetting;
-    if (gameSettings.gameStatus == GameStatus.game) {
+    if (gameSettings.gameStatus == GameStatus.game&&Values().getModelPlayerMe!=null) {
       WidgetsBinding.instance.addPostFrameCallback(
           (_) => Funcs().navigatorPush(context, const GamePage()));
     } else if (gameSettings.gameStatus == GameStatus.end) {

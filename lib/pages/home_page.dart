@@ -1,5 +1,4 @@
 import 'package:ad_sehir/colors.dart';
-import 'package:ad_sehir/firebase/realtime.dart';
 import 'package:ad_sehir/funcs.dart';
 import 'package:ad_sehir/pages/room_create_page.dart';
 import 'package:ad_sehir/simpleUIs.dart';
@@ -10,6 +9,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Realtime()
+    //     .ref
+    //     .child("rooms/-N5UJSsEIAgVu-izCOGS/results/")
+    //     .get()
+    //     .then((value) {
+    //   Map map = value.value as Map<dynamic, dynamic>;
+    //   print(map['202262692314178']['a']['ticks']);
+    // });
     return Scaffold(
       backgroundColor: color1,
       appBar: AppBar(
@@ -25,8 +32,7 @@ class HomePage extends StatelessWidget {
         child: SimpleUIs.elevatedButton(
           context: context,
           onPress: () async {
-            var path =
-                await Funcs().navigatorPush(context, RoomCreatePage());
+            var path = await Funcs().navigatorPush(context, RoomCreatePage());
 
             Navigator.pushNamed(context, "/room?r=$path");
           },

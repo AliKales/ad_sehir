@@ -1,7 +1,9 @@
 import 'package:ad_sehir/colors.dart';
 import 'package:ad_sehir/firebase_options.dart';
+import 'package:ad_sehir/pages/end_page.dart';
 import 'package:ad_sehir/pages/home_page.dart';
 import 'package:ad_sehir/pages/room_page.dart';
+import 'package:ad_sehir/provider/provider_end_page.dart';
 import 'package:ad_sehir/provider/provider_game_settings.dart';
 import 'package:ad_sehir/provider/provider_room_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,6 +23,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider<ProviderRoomPage>(
           create: (_) => ProviderRoomPage(),
+        ),
+        ChangeNotifierProvider<ProviderEndPage>(
+          create: (_) => ProviderEndPage(),
         ),
       ],
       child: const MyApp(),
@@ -83,7 +88,7 @@ class MyApp extends StatelessWidget {
 
   dynamic generateRoute(String link, RouteSettings? settings) {
     // return MaterialPageRoute(
-    //     builder: (_) => const EndPage(), settings: settings);
+    //     builder: (_) => EndPage(), settings: settings);
     Map params = {};
     if (link.contains("?")) {
       List<String> paramsList = link.split("?")[1].split("&");
