@@ -4,8 +4,6 @@ import 'package:ad_sehir/firebase/realtime.dart';
 import 'package:ad_sehir/funcs.dart';
 import 'package:ad_sehir/models/model_game_settings.dart';
 import 'package:ad_sehir/models/model_player.dart';
-import 'package:ad_sehir/pages/end_page.dart';
-import 'package:ad_sehir/pages/game_page.dart';
 import 'package:ad_sehir/provider/provider_game_settings.dart';
 import 'package:ad_sehir/provider/provider_room_page.dart';
 import 'package:ad_sehir/simpleUIs.dart';
@@ -25,6 +23,7 @@ class RoomPage extends StatefulWidget {
 class _RoomPageState extends State<RoomPage> {
   List<ModelPlayer> players = [];
   TextEditingController tECUsername = TextEditingController();
+  bool isDone = false;
 
   @override
   void initState() {
@@ -35,6 +34,7 @@ class _RoomPageState extends State<RoomPage> {
 
   start() {
     Realtime.startListeners(context: context, roomId: widget.roomId);
+    Realtime().listenToGameSettings(context, widget.roomId);
   }
 
   @override
@@ -45,12 +45,17 @@ class _RoomPageState extends State<RoomPage> {
     }
     ModelGameSettings gameSettings =
         Provider.of<ProviderGameSettings>(context).modelGameSetting;
-    if (gameSettings.gameStatus == GameStatus.game&&Values().getModelPlayerMe!=null) {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => Funcs().navigatorPush(context, const GamePage()));
-    } else if (gameSettings.gameStatus == GameStatus.end) {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => Funcs().navigatorPush(context, const EndPage()));
+    if (gameSettings.gameStatus == GameStatus.game &&
+        Values().getModelPlayerMe != null &&
+        !isDone) {
+      isDone = true;
+      Realtime().stopListeners();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(
+          context,
+          "/game?r=${widget.roomId}",
+        );
+      });
     }
     return Scaffold(
       backgroundColor: color1,

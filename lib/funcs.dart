@@ -2,6 +2,7 @@ import 'package:ad_sehir/colors.dart';
 import 'package:ad_sehir/models/model_player.dart';
 import 'package:ad_sehir/values.dart';
 import 'package:flutter/material.dart';
+import 'package:text_to_speech/text_to_speech.dart';
 
 class Funcs {
   Future<dynamic> navigatorPush(context, page) async {
@@ -56,5 +57,12 @@ class Funcs {
             )
             .id ==
         null;
+  }
+
+  TextToSpeech tts = TextToSpeech();
+  Future speak(String text) async {
+    tts.setVolume(0.5);
+    tts.setLanguage('en-US');
+    tts.speak(text);
   }
 }

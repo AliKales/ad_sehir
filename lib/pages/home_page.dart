@@ -3,20 +3,13 @@ import 'package:ad_sehir/funcs.dart';
 import 'package:ad_sehir/pages/room_create_page.dart';
 import 'package:ad_sehir/simpleUIs.dart';
 import 'package:flutter/material.dart';
+import 'dart:js' as js;
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Realtime()
-    //     .ref
-    //     .child("rooms/-N5UJSsEIAgVu-izCOGS/results/")
-    //     .get()
-    //     .then((value) {
-    //   Map map = value.value as Map<dynamic, dynamic>;
-    //   print(map['202262692314178']['a']['ticks']);
-    // });
     return Scaffold(
       backgroundColor: color1,
       appBar: AppBar(
@@ -28,15 +21,51 @@ class HomePage extends StatelessWidget {
         backgroundColor: color1,
         centerTitle: true,
       ),
-      body: Center(
-        child: SimpleUIs.elevatedButton(
-          context: context,
-          onPress: () async {
-            var path = await Funcs().navigatorPush(context, RoomCreatePage());
+      body: SingleChildScrollView(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: (MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height) /
+                    2.5,
+              ),
+              SimpleUIs.elevatedButton(
+                context: context,
+                onPress: () async {
+                  var path = await Funcs()
+                      .navigatorPush(context, const RoomCreatePage());
 
-            Navigator.pushNamed(context, "/room?r=$path");
-          },
-          text: "Oda Kur",
+                  if (path != null) {
+                    Navigator.pushReplacementNamed(context, "/room?r=$path");
+                  }
+                },
+                text: "Oda Kur",
+              ),
+              SizedBox(
+                height: (MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height) /
+                    2.5,
+              ),
+              Column(
+                children: [
+                  const Text("Diğer oyuna da göz at"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SimpleUIs.elevatedButton(
+                      context: context,
+                      onPress: () {
+                        js.context.callMethod(
+                            'open', ['https://quiz-app-89650.web.app']);
+                      },
+                      text: "Oyuna Git"),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

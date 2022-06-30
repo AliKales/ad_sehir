@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 class ProviderRoomPage with ChangeNotifier {
   List<ModelPlayer> players = [];
 
-  List<ModelPlayer> get getPlayers => players;
-
   void addPlayer(ModelPlayer modelPlayer) {
     players.add(modelPlayer);
+    Values.players = players;
     notifyListeners();
   }
 
   void removePlayer(String id) {
     players.removeWhere((element) => element.id == id);
+    Values.players = players;
     notifyListeners();
   }
 }

@@ -1,6 +1,8 @@
 import 'package:ad_sehir/colors.dart';
 import 'package:ad_sehir/firebase_options.dart';
+import 'package:ad_sehir/funcs.dart';
 import 'package:ad_sehir/pages/end_page.dart';
+import 'package:ad_sehir/pages/game_page.dart';
 import 'package:ad_sehir/pages/home_page.dart';
 import 'package:ad_sehir/pages/room_page.dart';
 import 'package:ad_sehir/provider/provider_end_page.dart';
@@ -9,12 +11,14 @@ import 'package:ad_sehir/provider/provider_room_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  setPathUrlStrategy();
   runApp(
     MultiProvider(
       providers: [
@@ -54,10 +58,7 @@ class MyApp extends StatelessWidget {
       title: 'İsim Şehir',
       theme: ThemeData(
         dividerColor: color3,
-        dividerTheme: DividerThemeData(
-          color: color3,
-          thickness: 4
-        ),
+        dividerTheme: DividerThemeData(color: color3, thickness: 4),
         appBarTheme:
             const AppBarTheme(backgroundColor: color1, foregroundColor: color4),
         iconTheme: const IconThemeData(color: color4),
@@ -101,6 +102,12 @@ class MyApp extends StatelessWidget {
     if (link.contains("room")) {
       return MaterialPageRoute(
           builder: (_) => RoomPage(roomId: params['r']), settings: settings);
+    } else if (link.contains("game")) {
+      return MaterialPageRoute(
+          builder: (_) => GamePage(roomId: params['r']), settings: settings);
+    } else if (link.contains("end")) {
+      return MaterialPageRoute(
+          builder: (_) => EndPage(roomId: params['r']), settings: settings);
     }
     return MaterialPageRoute(
         builder: (_) => const HomePage(), settings: settings);

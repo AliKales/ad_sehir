@@ -6,11 +6,13 @@ class Values {
   static ModelGameSettings? modelGameSettings;
   static String roomId = "";
   static bool isLeader = false;
+  static List<ModelPlayer>? players;
 
   bool get getIsLeader => isLeader;
   String get getRoomId => roomId;
   ModelPlayer? get getModelPlayerMe => modelPlayerMe;
   ModelGameSettings? get getModelGameSettings => modelGameSettings;
+  List<ModelPlayer> get getPlayers => players ?? [];
 }
 
 enum GameStatus {

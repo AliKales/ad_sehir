@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:ad_sehir/funcs.dart';
 import 'package:ad_sehir/models/model_game_settings.dart';
@@ -15,6 +14,7 @@ import 'package:provider/provider.dart';
 class Realtime {
   static StreamSubscription? streamSubscription1;
   static StreamSubscription? streamSubscription2;
+  static StreamSubscription? streamSubscription4;
 
   var ref = FirebaseDatabase.instanceFor(
           app: Firebase.apps[0],
@@ -56,8 +56,14 @@ class Realtime {
       Provider.of<ProviderRoomPage>(context, listen: false)
           .removePlayer(event.snapshot.key ?? "");
     });
+  }
 
-    Realtime().ref.child("rooms/$roomId/gameSettings").onValue.listen((event) {
+  void listenToGameSettings(context, String roomId) {
+    streamSubscription4 = Realtime()
+        .ref
+        .child("rooms/$roomId/gameSettings")
+        .onValue
+        .listen((event) {
       ModelGameSettings _mGS = ModelGameSettings.fromJson(
           event.snapshot.value as Map<String, dynamic>);
       Values.modelGameSettings = _mGS;
@@ -68,6 +74,7 @@ class Realtime {
   void stopListeners() {
     streamSubscription1?.cancel();
     streamSubscription2?.cancel();
+    streamSubscription4?.cancel();
   }
 
   static Future joinToRoom(
@@ -101,12 +108,13 @@ class Realtime {
     ModelGameSettings modelGameSettings =
         Values.modelGameSettings ?? ModelGameSettings();
     modelGameSettings.gameStatus = GameStatus.game;
-    int timeMinute = modelGameSettings.minute ?? 2;
-    DateTime dateTime = Funcs().getGMTDateTimeNow();
-    dateTime = dateTime.add(Duration(minutes: timeMinute));
-    modelGameSettings.dateTime = dateTime;
+    // int timeMinute = modelGameSettings.minute ?? 2;
+    // DateTime dateTime = Funcs().getGMTDateTimeNow();
+    // dateTime = dateTime.add(Duration(minutes: timeMinute));
+    // modelGameSettings.dateTime = dateTime;
 
     Values.modelGameSettings = modelGameSettings;
+
     Realtime().ref.child(path).update(modelGameSettings.toJson());
   }
 
@@ -129,10 +137,7 @@ class Realtime {
 
     Map<String, dynamic> resultsMap = {};
 
-    List<ModelPlayer> players =
-        Provider.of<ProviderRoomPage>(context, listen: false).players;
-
-    players.removeWhere((element) => element.id == modelPlayerME.id);
+    List<ModelPlayer> players = Values.players?.toList() ?? [];
 
     for (var i = 0; i < categories.length; i++) {
       String answ = answers[i].trim();
@@ -173,6 +178,43 @@ class Realtime {
     Realtime().ref.child(path).update({
       "${Values().getModelPlayerMe?.id}|${Values().getModelPlayerMe?.username}":
           value
+    });
+  }
+
+  static Future finishGame({required context}) async {
+    String path = "rooms/${Values().getRoomId}/playersFinished";
+
+    DatabaseReference postRef = Realtime().ref.child(path);
+
+    await postRef.runTransaction((Object? post) {
+      Map<String, dynamic> _post =
+          post == null ? {} : Map<String, dynamic>.from(post as Map);
+
+      _post[Values().getModelPlayerMe!.id!] =
+          Values().getModelPlayerMe!.username;
+
+      if (_post.keys.length >= Values().getPlayers.length) {
+        //when all players already finished then finish the game here
+        Realtime()
+            .ref
+            .child("rooms/${Values().getRoomId}/gameSettings")
+            .update({'gameStatus': GameStatus.end.name});
+        return Transaction.abort();
+      } else if (Values().getModelGameSettings!.dateTime == null &&
+          _post.keys.length >= (Values().getPlayers.length / 2).round()) {
+        //when half of the playes finished then timer will start
+        DateTime _dt = Funcs().getGMTDateTimeNow();
+        _dt = _dt.add(const Duration(minutes: 1));
+
+        Realtime()
+            .ref
+            .child("rooms/${Values().getRoomId}/gameSettings")
+            .update({'dateTime': _dt.toIso8601String()});
+        return Transaction.success(_post);
+      }
+
+      // Return the new data.
+      return Transaction.success(_post);
     });
   }
 }

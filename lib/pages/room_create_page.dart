@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ad_sehir/UIs/custom_text_field.dart';
 import 'package:ad_sehir/colors.dart';
 import 'package:ad_sehir/firebase/realtime.dart';
@@ -8,13 +10,32 @@ import 'package:ad_sehir/simpleUIs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RoomCreatePage extends StatelessWidget {
-  RoomCreatePage({Key? key}) : super(key: key);
+class RoomCreatePage extends StatefulWidget {
+  const RoomCreatePage({Key? key}) : super(key: key);
 
-  late TextEditingController tECMinute = TextEditingController();
-  late TextEditingController tECCategory = TextEditingController();
+  @override
+  State<RoomCreatePage> createState() => _RoomCreatePageState();
+}
+
+class _RoomCreatePageState extends State<RoomCreatePage> {
+  TextEditingController tECMinute = TextEditingController();
+
+  TextEditingController tECCategory = TextEditingController();
 
   late ModelGameSettings modelGameSettings;
+
+  String letters = "a b c/ç d e f g h ı/i j k l m n o/ö p r s/ş t u/ü v y z";
+
+  String whichLetter = "";
+
+  final _random = Random();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    randomLetter();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +91,11 @@ class RoomCreatePage extends StatelessWidget {
                 text: "Ekle"),
             const Divider(),
             const SizedBox(height: 50),
-            CustomTextField(
-                hintText: "Dakika", isOnlyNumbers: true, tEC: tECMinute),
+            Text("Random Harf: $whichLetter"),
+            SimpleUIs.elevatedButton(
+                context: context,
+                onPress: () => randomLetter(),
+                text: "Yeni Harf"),
             const SizedBox(height: 50),
             SimpleUIs.elevatedButton(
                 context: context,
@@ -81,6 +105,14 @@ class RoomCreatePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void randomLetter() {
+    List<String> listLetters = letters.split(" ");
+    String element = listLetters[_random.nextInt(listLetters.length)];
+    setState(() {
+      whichLetter = element;
+    });
   }
 
   void addCategory(context) {
@@ -98,13 +130,12 @@ class RoomCreatePage extends StatelessWidget {
   }
 
   Future createRoom(context) async {
-    modelGameSettings.minute = int.tryParse(tECMinute.text.trim());
-
-    if ((modelGameSettings.categories?.isEmpty ?? true) ||
-        (modelGameSettings.minute == null)) {
-      Funcs().showSnackBar(context, "Dakika, Username ve Kategori ekle.");
+    if ((modelGameSettings.categories?.isEmpty ?? true)) {
+      Funcs().showSnackBar(context, "Kategori ekle.");
       return;
     }
+
+    modelGameSettings.letter = whichLetter;
 
     String path = await Realtime.createRoom(
         context: context, modelGameSettings: modelGameSettings);
